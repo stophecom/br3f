@@ -60,6 +60,8 @@
     /* Custom */
     :root {
       --border-radius: 10px;
+      --error: #dd1b76;
+      --success: #1bdd8c;
     }
 
     html {
@@ -71,12 +73,12 @@
     }
 
     body {
-      background: linear-gradient(-45deg, #2f0a18, #051c24, #062a22);
+      background: linear-gradient(-45deg, #220711, #031115, #041a15);
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
       height: 100%;
       display: grid;
-      grid-template-rows: 4fr 1fr 1fr;
+      grid-template-rows: 7fr 1fr 1fr;
     }
 
     a {
@@ -121,6 +123,41 @@
       font-size: 1rem;
     }
 
+    .success,
+    .error {
+      display: flex;
+      margin-top: 1.5em;
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 0.8em;
+    }
+    .error {
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+    .success {
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 0.8em;
+      word-break: break-all;
+    }
+
+    .copied {
+      padding: 1em;
+      opacity: 0;
+      animation: copied 3s;
+      animation-fill-mode: forwards;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .template {
+      min-height: 130px;
+    }
+
     .form {
       position: relative;
     }
@@ -147,7 +184,6 @@
       width: calc(100% + 2px);
       height: calc(100% + 2px);
       animation: glowing 40s linear infinite;
-      /* transition: opacity 0.2s ease-in-out; */
       opacity: 0.9;
       border-radius: var(--border-radius);
     }
@@ -155,9 +191,6 @@
     .field {
       position: relative;
       display: flex;
-    }
-
-    .label {
     }
 
     .input {
@@ -168,6 +201,10 @@
       font: inherit;
       border-top-left-radius: var(--border-radius);
       border-bottom-left-radius: var(--border-radius);
+    }
+
+    .input:focus {
+      outline: none;
     }
 
     .button {
@@ -196,6 +233,7 @@
       margin-right: auto;
       opacity: 0.5;
       text-align: center;
+      line-height: 1.4;
     }
 
     .description {
@@ -237,21 +275,28 @@
       100% {
         opacity: 0.05;
       }
-    } ;
+    }
+
+    @keyframes copied {
+      0% {
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
   </style>
   <body>
     <canvas id="matrix" width="100%" height="100%"></canvas>
     <main class="main">
       <div class="logo">br3f.<small>com</small></div>
-      <h1>Create disguised URL Redirects</h1>
+      <h1>Create a one-time anonymous link.</h1>
 
-      <div>
-        <form
-          name="url-form"
-          class="form"
-          action=""
-          onsubmit="return handleSubmit()"
-        >
+      <div class="content" id="content">
+        <form name="url-form" id="form" class="form">
           <div class="field">
             <label class="sr-only" for="url">URL</label>
             <input
@@ -266,15 +311,24 @@
             <button class="button" type="submit">Create link</button>
           </div>
         </form>
+        <div class="template"></div>
       </div>
     </main>
+
     <aside class="description">
       <small>
-        With bref.com you can create anonymous redirect links. The original link
-        will be disguised. Use it whenever you want to share a link without
-        giving away the destination.
+        Leave no trace. With br3f you can create disguised, one-time redirect
+        links. Use it whenever you have to share a sensitive URL in a chat or
+        email. Read more about the security features on
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://scrt.link/security"
+          >https://scrt.link/security</a
+        >
       </small>
     </aside>
+
     <footer class="footer">
       <small>
         Created by
@@ -291,17 +345,80 @@
           href="https://github.com/stophecom/br3f"
           >Github</a
         >
+        &bull; Powered by
+        <a target="_blank" rel="noopener noreferrer" href="https://scrt.link"
+          >scrt.link</a
+        >
       </small>
     </footer>
-  </body>
-  <script>
-    function handleSubmit() {
-      let x = document.forms['url-form']['url'].value
 
-      if (x == '') {
-        alert('Name must be filled out')
-        return false
+    <template id="error">
+      <div class="template error">
+        <div>Error:&nbsp;</div>
+        <div class="message">Something went wrong.</div>
+      </div>
+    </template>
+
+    <template id="success">
+      <div class="template">
+        <div class="success">
+          <div class="message">Dynamic content</div>
+        </div>
+        <small class="copied">Copied to clipboard</small>
+      </div>
+    </template>
+  </body>
+
+  <script type="module">
+    import {
+      createSecret,
+      retrieveSecret,
+    } from 'https://cdn.skypack.dev/scrt-link-core'
+
+    const form = document.getElementById('form')
+    form.addEventListener('submit', handleSubmit)
+
+    function handleSubmit(event) {
+      event.preventDefault()
+      let url = document.forms['url-form']['url'].value
+
+      // Is proper URL
+      var expression =
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+      const regex = RegExp(expression)
+      if (regex.test(url)) {
+        createSecret(url, { secretType: 'url' }, 'http://localhost:3000')
+          .then(({ alias, encryptionKey }) => {
+            const url = `https://br3f.com/l/#${alias}/${encryptionKey}`
+            showMessage('success', url)
+            navigator.clipboard.writeText(url)
+          })
+          .catch(() => {
+            showMessage('error', 'API is down. Please check back later.')
+          })
+      } else {
+        showMessage('error', 'URL is not valid.')
       }
+    }
+
+    function showMessage(messageType, message) {
+      // Cleanup
+      const collection = document.getElementsByClassName('template')
+
+      console.log(collection)
+      for (var i = 0; i < collection.length; ++i) {
+        collection[i].remove()
+      }
+      // collection.remove()
+
+      const template = document.getElementById(messageType)
+      const form = document.getElementById('content')
+      const clone = template.content.cloneNode(true)
+
+      const node = clone.querySelector('.message')
+      node.innerText = message
+
+      form.appendChild(clone)
     }
   </script>
   <script src="matrix.js"></script>
