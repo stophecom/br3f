@@ -2,8 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Br3f - Disguised URL Redirects</title>
-    <meta name="description" content="Anonymous URL Redirects" />
+    <title>Br3f - Anonymous One-time URL Redirects</title>
+    <meta
+      name="description"
+      content="Leave no trace. Create disguised, one-time redirect
+        links to use whenever you have to share a sensitive URL in a chat or
+        email."
+    />
     <meta name="viewport" content="width=device-width" />
   </head>
   <style>
@@ -370,10 +375,7 @@
   </body>
 
   <script type="module">
-    import {
-      createSecret,
-      retrieveSecret,
-    } from 'https://cdn.skypack.dev/scrt-link-core'
+    import { createSecret } from 'https://cdn.skypack.dev/scrt-link-core'
 
     const form = document.getElementById('form')
     form.addEventListener('submit', handleSubmit)
@@ -387,7 +389,7 @@
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
       const regex = RegExp(expression)
       if (regex.test(url)) {
-        createSecret(url, { secretType: 'url' })
+        createSecret(url, { secretType: 'url' }, 'http://localhost:3000')
           .then(({ alias, encryptionKey }) => {
             const url = `https://br3f.com/l/#${alias}/${encryptionKey}`
             showMessage('success', url)
