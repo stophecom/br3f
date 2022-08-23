@@ -1,2 +1,7 @@
 # br3f
-Disguised URL redirects
+
+br3f.com
+
+One-time disguised URL redirects.
+
+Based on: https://gitlab.com/kingchiller/scrt-link

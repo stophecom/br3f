@@ -389,7 +389,7 @@
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
       const regex = RegExp(expression)
       if (regex.test(url)) {
-        createSecret(url, { secretType: 'url' }, 'http://localhost:3000')
+        createSecret(url, { secretType: 'url' })
           .then(({ alias, encryptionKey }) => {
             const url = `https://br3f.com/l/#${alias}/${encryptionKey}`
             showMessage('success', url)
