@@ -228,7 +228,7 @@
       align-items: flex-end;
       font-weight: light;
       padding: 2em;
-      max-width: 600px;
+      max-width: 590px;
       margin-left: auto;
       margin-right: auto;
       opacity: 0.5;
@@ -325,7 +325,7 @@
           rel="noopener noreferrer"
           href="https://scrt.link/security"
           >https://scrt.link/security</a
-        >
+        >.
       </small>
     </aside>
 
@@ -387,7 +387,7 @@
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
       const regex = RegExp(expression)
       if (regex.test(url)) {
-        createSecret(url, { secretType: 'url' }, 'http://localhost:3000')
+        createSecret(url, { secretType: 'url' })
           .then(({ alias, encryptionKey }) => {
             const url = `https://br3f.com/l/#${alias}/${encryptionKey}`
             showMessage('success', url)
