@@ -106,7 +106,7 @@
       flex-direction: column;
       justify-content: center;
       text-align: center;
-      padding: 2em;
+      padding: min(5vw, 2em);
     }
 
     h1 {
@@ -200,7 +200,9 @@
 
     .input {
       border: 0;
-      min-width: 220px;
+      width: clamp(180px, 100%, 220px);
+      min-width: 0;
+      flex-shrink: 1;
       height: 50px;
       padding: 0 2em 0 1.5em;
       font: inherit;
