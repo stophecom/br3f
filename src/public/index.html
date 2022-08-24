@@ -10,6 +10,13 @@
         email."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script
+      defer
+      data-domain="br3f.com"
+      src="https://plausible.io/js/script.exclusions.js"
+      data-exclude="/l/*"
+    ></script>
   </head>
   <style>
     /* Reset */
@@ -65,6 +72,7 @@
     /* Custom */
     :root {
       --border-radius: 10px;
+      --padding: min(5vw, 2em);
       --error: #dd1b76;
       --success: #1bdd8c;
     }
@@ -106,7 +114,8 @@
       flex-direction: column;
       justify-content: center;
       text-align: center;
-      padding: min(5vw, 2em);
+      padding: var(--padding);
+      padding-top: 6em;
     }
 
     h1 {
@@ -234,7 +243,7 @@
       display: flex;
       align-items: flex-end;
       font-weight: light;
-      padding: 2em;
+      padding: var(--padding);
       max-width: 590px;
       margin-left: auto;
       margin-right: auto;
@@ -326,13 +335,7 @@
       <small>
         Leave no trace. With br3f you can create disguised, one-time redirect
         links. Use it whenever you have to share a sensitive URL in a chat or
-        email. Read more about the security features on
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://scrt.link/security"
-          >https://scrt.link/security</a
-        >.
+        email.
       </small>
     </aside>
 
