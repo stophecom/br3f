@@ -11,44 +11,70 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="../styles.css" />
   </head>
+  <body>
+    <script type="module">
+      import { retrieveSecret } from 'https://cdn.skypack.dev/scrt-link-core'
 
-  <script type="module">
-    import { retrieveSecret } from 'https://cdn.skypack.dev/scrt-link-core'
+      const hashData = window.location.hash.substring(1).split('/')
+      const alias = hashData[0]
+      const decryptionKey = hashData[1]
 
-    const hashData = window.location.hash.substring(1).split('/')
-    const alias = hashData[0]
-    const decryptionKey = hashData[1]
+      const handleError = (message) => {
+        const content = document.getElementById('content')
 
-    const redirectWithDelay = () => {
-      const br = document.createElement('br')
-      document.body.appendChild(br)
-      document.body.append('You will be redirected in a second.')
+        // Empty content
+        content.innerText = ''
 
-      setTimeout(() => {
-        window.location.replace('https://br3f.com')
-      }, 3000)
-    }
+        const title = document.createElement('h3')
+        title.style.color = 'var(--error)'
+        title.innerText = 'Error'
+        content.append(title)
 
-    document.body.innerText = 'Redirecting…'
+        const text = document.createElement('p')
+        text.style.color = 'var(--error)'
+        text.innerText = message
+        content.append(text)
 
-    if (!alias || typeof alias !== 'string') {
-      document.body.innerText = 'Invalid alias.'
-      redirectWithDelay()
-      throw new Error('Invalid alias.')
-    }
-    if (!decryptionKey) {
-      document.body.innerText = 'Decryption key missing.'
-      redirectWithDelay()
-      throw new Error('Decryption key missing.')
-    }
+        const br = document.createElement('br')
+        console.log(message)
 
-    const secret = await retrieveSecret(alias, decryptionKey).catch((error) => {
-      document.body.innerText = error?.message || 'Something went wrong.'
+        content.appendChild(br)
 
-      redirectWithDelay()
-    })
+        const redirection = document.createElement('small')
+        redirection.innerText = 'You will be redirected in 3 seconds…'
+        content.append(redirection)
 
-    secret?.message && window.location.replace(secret.message)
-  </script>
+        setTimeout(() => {
+          window.location.replace('https://br3f.com')
+        }, 5000)
+        throw new Error(message)
+      }
+
+      if (!alias || typeof alias !== 'string') {
+        handleError(
+          'The link you are trying to access is incomplete (invalid alias).',
+        )
+      }
+      if (!decryptionKey) {
+        handleError(
+          'The link you are trying to access is incomplete (decryption key missing).',
+        )
+      }
+
+      const secret = await retrieveSecret(alias, decryptionKey).catch(
+        (error) => {
+          handleError(error?.message || 'Something went wrong.')
+        },
+      )
+
+      secret?.message && window.location.replace(secret.message)
+    </script>
+
+    <main class="main">
+      <div class="logo">br3f.<small>com</small></div>
+      <div id="content">Redirecting...</div>
+    </main>
+  </body>
 </html>

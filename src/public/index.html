@@ -23,89 +23,9 @@
     ></script>
 
     <link rel="stylesheet" href="button.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <style>
-    /* Reset */
-    html {
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-
-    *,
-    *:before,
-    *:after {
-      box-sizing: inherit;
-    }
-
-    body,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p,
-    ol,
-    ul {
-      margin: 0;
-      padding: 0;
-      font-weight: normal;
-    }
-
-    ol,
-    ul {
-      list-style: none;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    /* Helpers */
-
-    /* Hiding class, making content visible only to screen readers but not visually */
-    .sr-only:not(:focus):not(:active) {
-      clip: rect(0 0 0 0);
-      clip-path: inset(50%);
-      height: 1px;
-      overflow: hidden;
-      position: absolute;
-      white-space: nowrap;
-      width: 1px;
-    }
-
-    /* Custom */
-    :root {
-      --border-radius: 10px;
-      --padding: min(5vw, 2em);
-      --error: #dd1b76;
-      --success: #1bdd8c;
-      --button-bg: #111;
-    }
-
-    html {
-      background-color: #333333;
-      color: white;
-      font-family: system, -apple-system, '.SFNSText-Regular', 'San Francisco',
-        'Roboto', 'Segoe UI', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-      height: 100%;
-    }
-
-    body {
-      background: linear-gradient(-45deg, #220711, #031115, #041a15);
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
-      min-height: 100%;
-      display: grid;
-      grid-template-rows: 5fr 1fr 1fr;
-    }
-
-    a {
-      font: inherit;
-      color: inherit;
-    }
-
     #matrix {
       position: absolute;
       top: 0;
@@ -113,35 +33,6 @@
       opacity: 0;
       animation: fadeIn 3s linear 1s;
       animation-fill-mode: forwards;
-    }
-    .main {
-      position: relative;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      padding: var(--padding);
-      padding-top: 6em;
-    }
-
-    h1 {
-      margin-bottom: 1.5em;
-    }
-
-    p {
-      margin-bottom: 1em;
-    }
-
-    .logo {
-      opacity: 0.9;
-      margin-bottom: 2em;
-      font-size: 1.5rem;
-    }
-
-    .logo small {
-      opacity: 0.6;
-      font-size: 1rem;
     }
 
     .success,
