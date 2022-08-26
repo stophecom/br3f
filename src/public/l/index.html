@@ -43,6 +43,7 @@
         content.append(text)
 
         const br = document.createElement('br')
+        console.log(message)
 
         content.appendChild(br)
 
@@ -56,73 +57,24 @@
         throw new Error(message)
       }
 
-      function detectUserInteraction(
-        onInteractionCallback,
-        onIdleCallback,
-        wait = 3000,
-      ) {
-        const targetObj = {
-          isRealUser: false,
-        }
-        const targetProxy = new Proxy(targetObj, {
-          set: function (target, key, value) {
-            target[key] = value
-            onInteractionCallback(event)
-            return true
-          },
-        })
-
-        const handleInteraction = (event) => {
-          if (!targetObj.isRealUser) {
-            targetProxy.isRealUser = true
-          }
-        }
-
-        setTimeout(() => {
-          if (!targetObj.isRealUser) {
-            onIdleCallback()
-          }
-        }, wait)
-
-        document.addEventListener('mousemove', handleInteraction)
-        document.addEventListener('scroll', handleInteraction)
-        document.addEventListener('keydown', handleInteraction)
-        document.addEventListener('click', handleInteraction)
-        document.addEventListener('touchstart', handleInteraction)
-        window.addEventListener('devicemotion', handleInteraction)
+      if (!alias || typeof alias !== 'string') {
+        handleError(
+          'The link you are trying to access is incomplete (invalid alias).',
+        )
+      }
+      if (!decryptionKey) {
+        handleError(
+          'The link you are trying to access is incomplete (decryption key missing).',
+        )
       }
 
-      const getSecret = () => {
-        if (!alias || typeof alias !== 'string') {
-          handleError(
-            'The link you are trying to access is incomplete (invalid alias).',
-          )
-        }
-        if (!decryptionKey) {
-          handleError(
-            'The link you are trying to access is incomplete (decryption key missing).',
-          )
-        }
+      const secret = await retrieveSecret(alias, decryptionKey).catch(
+        (error) => {
+          handleError(error?.message || 'Something went wrong.')
+        },
+      )
 
-        return retrieveSecret(alias, decryptionKey)
-          .then((secret) => {
-            secret?.message && window.location.replace(secret.message)
-          })
-          .catch((error) => {
-            handleError(error?.message || 'Something went wrong.')
-          })
-      }
-
-      const demandUserActivity = () => {
-        const content = document.getElementById('content')
-        content.innerText = ''
-        const text = document.createElement('p')
-        text.style.color = 'var(--success)'
-        text.innerText = 'Please move your mouse or click to redirect'
-        content.append(text)
-      }
-
-      detectUserInteraction(getSecret, demandUserActivity)
+      secret?.message && window.location.replace(secret.message)
     </script>
 
     <main class="main">
